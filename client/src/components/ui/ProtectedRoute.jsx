@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuthStore } from "../../store/authStore";
+import { useAuthStore } from "../../store/auth.store.js";
 
 //Checks for authentication and optional role-based access control
 export default function ProtectedRoute({ roles }) {

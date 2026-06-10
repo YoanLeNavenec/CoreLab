@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
+import styles from "../../styles/CourseCard.module.css";
 
-//CourseCard component that displays basic information about a course in a card format with link
+//Displays basic information about a course in a card format with link
 export default function CourseCard({ course }) {
   return (
     <div>

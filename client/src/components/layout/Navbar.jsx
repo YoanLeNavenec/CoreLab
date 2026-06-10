@@ -1,36 +1,39 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useAuthStore } from "../../store/authStore";
+import { useAuthStore } from "../../store/auth.store.js";
+import styles from "../../styles/Navbar.module.css";
 
-//Navbar component that shows different links based on authentication state
 export default function Navbar() {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
 
-  //Handles user logout and redirects to login page
   const handleLogout = async () => {
     await logout();
     navigate("/login");
   };
 
-  //Renders navigation links conditionally based on whether the user is logged in or not
   return (
-    <nav>
-      <Link to="/">Home</Link>
-      <Link to="/courses">Courses</Link>
-
-      {/* If user is logged in, show dashboard link, user name, and logout button. Otherwise, show login and register links. */}
-      {user ? (
-        <>
-          <Link to="/dashboard">Dashboard</Link>
-          <span>{user.name}</span>
-          <button onClick={handleLogout}>Logout</button>
-        </>
-      ) : (
-        <>
-          <Link to="/login">Login</Link>
-          <Link to="/register">Register</Link>
-        </>
-      )}
+    <nav className={styles.navbar}>
+      <span className={styles.logo}>Corelab</span>
+      <div className={styles.navLinks}>
+        <Link to="/" className={styles.navLink}>Home</Link>
+        <Link to="/courses" className={styles.navLink}>Courses</Link>
+        {user && <Link to="/dashboard" className={styles.navLink}>Dashboard</Link>}
+      </div>
+      <div className={styles.navRight}>
+        {user ? (
+          <>
+            <span className={styles.adminBadge}>{user.name}</span>
+            <button className={styles.avatar} onClick={handleLogout}>
+              {user.name?.charAt(0).toUpperCase()}
+            </button>
+          </>
+        ) : (
+          <>
+            <Link to="/login" className={styles.navLink}>Login</Link>
+            <Link to="/register" className={styles.navLink}>Courses</Link>
+          </>
+        )}
+      </div>
     </nav>
   );
 }

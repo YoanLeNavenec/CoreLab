@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { getMyEnrollments } from "../api/course.api";
-import { useAuthStore } from "../store/authStore";
+import { useAuthStore } from "../store/auth.store.js";
 import { Link } from "react-router-dom";
+import styles from "../styles/Dashboard.module.css";
+import adminStyles from "../styles/Admin.module.css";
 
 export default function Dashboard() {
   const { user } = useAuthStore();

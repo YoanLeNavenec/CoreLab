@@ -1,0 +1,60 @@
+/* Home.module.css */
+
+.page {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 80px 24px;
+  text-align: center;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 500;
+  color: var(--p-darkest);
+  margin-bottom: 12px;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: var(--p-mid);
+  margin-bottom: 40px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btnPrimary {
+  padding: 10px 24px;
+  background-color: var(--p-charcoal);
+  color: var(--p-cream);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color var(--transition);
+}
+
+.btnPrimary:hover {
+  background-color: var(--p-darkest);
+  color: var(--p-cream);
+}
+
+.btnSecondary {
+  padding: 10px 24px;
+  background-color: transparent;
+  color: var(--p-charcoal);
+  border: var(--border-strong);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color var(--transition);
+}
+
+.btnSecondary:hover {
+  background-color: var(--p-cream);
+}

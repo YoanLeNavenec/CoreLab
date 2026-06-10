@@ -1,15 +1,14 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, Link } from "react-router-dom";
-import { useAuthStore } from "../store/authStore";
+import { useAuthStore } from "../store/auth.store.js";
 import { loginSchema } from "../schemas/auth.schema";
+import styles from "../styles/Auth.module.css";
 
-//Login page component that handles user login with form validation and error handling
 export default function Login() {
   const { login } = useAuthStore();
   const navigate = useNavigate();
 
-  //Initialize react-hook-form with Zod validation schema and error handling
   const {
     register,
     handleSubmit,
@@ -19,7 +18,6 @@ export default function Login() {
     resolver: zodResolver(loginSchema),
   });
 
-  //Handles form submission, calls login function from auth store + sending to dashboard, with error display on failure
   const onSubmit = async (data) => {
     try {
       await login(data);
@@ -29,32 +27,38 @@ export default function Login() {
     }
   };
 
-  //Renders login form with email and password fields, validation error messages, and a link to the registration page
   return (
-    <div>
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
+    <div className={styles.page}>
+      <div className={styles.card}>
+        <p className={styles.logo}>Corelab</p>
+        <h2 className={styles.title}>Welcome back</h2>
+        <p className={styles.subtitle}>Sign in to your account</p>
 
-        <div>
-          <label>Email</label>
-          <input type="email" {...register("email")} />
-          {errors.email && <p>{errors.email.message}</p>}
-        </div>
+        <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
 
-        <div>
-          <label>Password</label>
-          <input type="password" {...register("password")} />
-          {errors.password && <p>{errors.password.message}</p>}
-        </div>
+          <div className={styles.field}>
+            <label className={styles.label}>Email</label>
+            <input className={`${styles.input} ${errors.email ? styles.inputError : ''}`} type="email" {...register("email")} />
+            {errors.email && <p className={styles.error}>{errors.email.message}</p>}
+          </div>
 
-        {errors.root && <p>{errors.root.message}</p>}
+          <div className={styles.field}>
+            <label className={styles.label}>Password</label>
+            <input className={`${styles.input} ${errors.password ? styles.inputError : ''}`} type="password" {...register("password")} />
+            {errors.password && <p className={styles.error}>{errors.password.message}</p>}
+          </div>
 
-        <button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Logging in..." : "Login"}
-        </button>
+          {errors.root && <p className={styles.error}>{errors.root.message}</p>}
 
-      </form>
-      <p>Don't have an account? <Link to="/register">Register</Link></p>
+          <button className={styles.submitButton} type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Logging in..." : "Login"}
+          </button>
+
+        </form>
+        <p className="text-muted" style={{ textAlign: 'center', marginTop: '16px' }}>
+          Don't have an account? <Link to="/register">Register</Link>
+        </p>
+      </div>
     </div>
   );
 }

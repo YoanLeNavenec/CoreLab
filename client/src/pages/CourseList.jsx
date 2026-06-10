@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getCourses } from "../api/course.api";
 import CourseCard from "../components/course/CourseCard";
+import adminStyles from "../styles/Admin.module.css";
 
 //CourseList page component that fetches and displays a list of all courses with loading and error handling
 export default function CourseList() {

@@ -1,8 +1,9 @@
 import { useEffect } from "react";
-import { useAuthStore } from "./store/authStore";
+import { useAuthStore } from "./store/auth.store.js";
 import AppRouter from "./router/AppRouter";
+import "./index.css";
 
-//Main App component that initializes authentication state and renders the router
+//Initializes authentication state and renders the router
 export default function App() {
   const { init, loading } = useAuthStore();
 

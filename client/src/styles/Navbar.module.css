@@ -1,0 +1,107 @@
+/* Navbar.module.css */
+
+.navbar {
+  background-color: var(--p-darkest);
+  padding: 0 var(--space-xl);
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.06);
+}
+
+.logo {
+  color: var(--p-cream);
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xl);
+}
+
+.navLink {
+  color: var(--p-light);
+  font-size: 14px;
+  font-weight: 400;
+  transition: color var(--transition);
+  text-decoration: none;
+}
+
+.navLink:hover {
+  color: var(--p-cream);
+}
+
+.navLinkActive {
+  color: var(--p-cream);
+  font-weight: 500;
+}
+
+.navRight {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--p-charcoal);
+  border: 1.5px solid var(--p-mid);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--p-cream);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color var(--transition);
+}
+
+.avatar:hover {
+  border-color: var(--p-light);
+}
+
+.adminBadge {
+  padding: 2px 10px;
+  background-color: rgba(240, 236, 224, 0.1);
+  color: var(--p-cream);
+  border-radius: var(--radius-xl);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0 var(--space-md);
+  }
+
+  .navLinks {
+    display: none;
+  }
+
+  .menuButton {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    color: var(--p-light);
+    cursor: pointer;
+    padding: var(--space-xs);
+  }
+}
+
+@media (min-width: 769px) {
+  .menuButton {
+    display: none;
+  }
+}

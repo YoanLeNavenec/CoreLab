@@ -1,3 +1,5 @@
+import styles from "../../styles/Lesson.module.css";
+
 export default function LessonList({ lessons, onComplete }) {
   if (!lessons.length) return <p>No lessons yet.</p>;
 

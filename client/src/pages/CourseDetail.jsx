@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { getCourse, enrollInCourse, getCourseLessons, updateProgress } from "../api/course.api";
-import { useAuthStore } from "../store/authStore";
+import { useAuthStore } from "../store/auth.store.js";
 import LessonList from "../components/course/LessonList";
+import adminStyles from "../styles/Admin.module.css";
 
 export default function CourseDetail() {
   const { id } = useParams();

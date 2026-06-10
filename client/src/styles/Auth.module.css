@@ -1,0 +1,154 @@
+/* Auth.module.css */
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--p-darkest);
+  padding: var(--space-md);
+}
+
+.card {
+  background-color: var(--p-offwhite);
+  border: var(--border);
+  border-radius: var(--radius-lg);
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--p-darkest);
+  text-align: center;
+  margin-bottom: var(--space-xl);
+  letter-spacing: -0.02em;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--p-darkest);
+  margin-bottom: var(--space-xs);
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--p-mid);
+  margin-bottom: var(--space-xl);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--p-charcoal);
+}
+
+.input {
+  padding: 10px 14px;
+  border: var(--border-strong);
+  border-radius: var(--radius-sm);
+  background-color: #fff;
+  font-size: 14px;
+  color: var(--p-darkest);
+  font-family: var(--font-sans);
+  transition: border-color var(--transition);
+  outline: none;
+}
+
+.input::placeholder {
+  color: var(--p-light);
+}
+
+.input:focus {
+  border-color: var(--p-charcoal);
+}
+
+.inputError {
+  border-color: var(--p-red);
+}
+
+.hint {
+  font-size: 11px;
+  color: var(--p-light);
+}
+
+.error {
+  font-size: 12px;
+  color: var(--p-red);
+}
+
+.submitButton {
+  margin-top: var(--space-sm);
+  padding: 11px;
+  background-color: var(--p-charcoal);
+  color: var(--p-cream);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--transition);
+  width: 100%;
+}
+
+.submitButton:hover {
+  background-color: var(--p-darkest);
+}
+
+.submitButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* First login info box */
+.infoBox {
+  background-color: var(--p-cream);
+  border: var(--border);
+  border-left: 3px solid var(--p-charcoal);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 12px 14px;
+  font-size: 13px;
+  color: var(--p-charcoal);
+  margin-bottom: var(--space-lg);
+  line-height: 1.5;
+}
+
+/* Password strength indicator */
+.strengthBar {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.strengthSegment {
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+  background-color: var(--p-cream);
+  transition: background-color 0.2s ease;
+}
+
+.strengthWeak   { background-color: var(--p-red); }
+.strengthFair   { background-color: var(--p-mid); }
+.strengthStrong { background-color: var(--p-charcoal); }
+
+@media (max-width: 480px) {
+  .card {
+    padding: 28px 20px;
+  }
+}

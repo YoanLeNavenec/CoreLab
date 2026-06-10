@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getQuiz, submitQuiz, getMyAttempts } from "../api/quiz.api";
+import styles from "../styles/Quiz.module.css";
 
 export default function QuizPage() {
   const { courseId } = useParams();
   const navigate = useNavigate();
 
-  //State variables for quiz data, user's attempts, selected answers, quiz result, loading state, submission state, and error messages
   const [quiz, setQuiz] = useState(null);
   const [attempts, setAttempts] = useState([]);
   const [answers, setAnswers] = useState([]);
@@ -15,7 +15,6 @@ export default function QuizPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
-  //Fetch quiz data and user's previous attempts from API on component mount, with error handling and loading state management
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -25,7 +24,6 @@ export default function QuizPage() {
         ]);
         setQuiz(quizData);
         setAttempts(attemptsData);
-        // pre-fill answers array with null for each question
         setAnswers(new Array(quizData.questions.length).fill(null));
       } catch (err) {
         setError(err.message);
@@ -36,9 +34,7 @@ export default function QuizPage() {
     fetchData();
   }, [courseId]);
 
-  //Handles selecting an answer for a question, updates the answers state array at the correct index
   const handleAnswer = (questionIndex, optionIndex) => {
-    // replace the answer at the right position
     setAnswers((prev) => {
       const updated = [...prev];
       updated[questionIndex] = optionIndex;
@@ -46,8 +42,6 @@ export default function QuizPage() {
     });
   };
 
-  //Handles quiz submission, checks that all questions have been answered, calls submitQuiz API, 
-  //updates result state with the response, and refreshes attempts list with error handling and submission state management
   const handleSubmit = async () => {
     if (answers.includes(null)) {
       return setError("Please answer all questions before submitting.");
@@ -57,7 +51,6 @@ export default function QuizPage() {
       setError(null);
       const data = await submitQuiz(courseId, answers);
       setResult(data);
-      // refresh attempts list
       const updatedAttempts = await getMyAttempts(courseId);
       setAttempts(updatedAttempts);
     } catch (err) {
@@ -67,75 +60,101 @@ export default function QuizPage() {
     }
   };
 
-  //Handles retaking the quiz by resetting the result and answers state to allow the user to attempt the quiz again
   const handleRetake = () => {
     setResult(null);
     setAnswers(new Array(quiz.questions.length).fill(null));
   };
 
-  //Render loading message, error message, or quiz content based on current state
-  if (loading) return <p>Loading quiz...</p>;
-  if (error && !quiz) return <p>Error: {error}</p>;
-  if (!quiz) return <p>No quiz available for this course.</p>;
+  if (loading) return <p className="text-muted">Loading quiz...</p>;
+  if (error && !quiz) return <p className={styles.error}>{error}</p>;
+  if (!quiz) return <p className="text-muted">No quiz available for this course.</p>;
 
-  // show result screen after submission
   if (result) {
     return (
-      <div>
-        <h1>{result.passed ? "🎉 Passed!" : "❌ Failed"}</h1>
-        <p>Your score: {result.score}%</p>
-        <p>Passing score: {result.passingScore}%</p>
-        <p>Correct answers: {result.correct} / {result.total}</p>
-        <button onClick={handleRetake}>Retake Quiz</button>
-        <button onClick={() => navigate(`/courses/${courseId}`)}>Back to Course</button>
+      <div className={styles.page}>
+        <div className={styles.results}>
+          <p className={styles.resultsLabel}>Your result</p>
+          <p className={`${styles.resultsScore} ${result.passed ? styles.resultsPassed : styles.resultsFailed}`}>
+            {result.score}%
+          </p>
+          <p className={styles.resultsMessage}>
+            {result.passed ? "You passed!" : "You didn't pass this time."}
+          </p>
+          <p className="text-muted">Passing score: {result.passingScore}% — {result.correct} / {result.total} correct</p>
+          <div className={styles.actions} style={{ marginTop: '24px', justifyContent: 'center' }}>
+            <button className={styles.btnSecondary} onClick={handleRetake}>Retake Quiz</button>
+            <button className={styles.btnPrimary} onClick={() => navigate(`/courses/${courseId}`)}>Back to Course</button>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div>
-      <h1>{quiz.title}</h1>
-      <p>Passing score: {quiz.passingScore}%</p>
+    <div className={styles.page}>
+      <div className={styles.header}>
+        <p className={styles.breadcrumb}>
+          Courses <span>/</span> {quiz.title}
+        </p>
+        <h1>{quiz.title}</h1>
+        <p className="text-muted">Passing score: {quiz.passingScore}%</p>
+        <div className={styles.progressBar}>
+          <div className={styles.progressTrack}>
+            <div
+              className={styles.progressFill}
+              style={{ width: `${(answers.filter(a => a !== null).length / quiz.questions.length) * 100}%` }}
+            />
+          </div>
+          <span className={styles.progressCount}>
+            {answers.filter(a => a !== null).length} / {quiz.questions.length} answered
+          </span>
+        </div>
+      </div>
 
-      {/* previous attempts */}
       {attempts.length > 0 && (
-        <div>
-          <h2>Your previous attempts</h2>
-          <ul>
-            {attempts.map((attempt, i) => (
-              <li key={attempt._id}>
-                Attempt {attempts.length - i}: {attempt.score}%
-                — {attempt.passed ? "Passed ✓" : "Failed ✗"}
-                — {new Date(attempt.createdAt).toLocaleDateString()}
-              </li>
-            ))}
-          </ul>
+        <div className={styles.questionCard} style={{ marginBottom: '24px' }}>
+          <p className={styles.questionNumber}>Previous attempts</p>
+          {attempts.map((attempt, i) => (
+            <p key={attempt._id} className="text-muted">
+              Attempt {attempts.length - i}: {attempt.score}%
+              — {attempt.passed ? "Passed" : "Failed"}
+              — {new Date(attempt.createdAt).toLocaleDateString()}
+            </p>
+          ))}
         </div>
       )}
 
-      {/* questions */}
       {quiz.questions.map((q, qi) => (
-        <div key={q._id}>
-          <h3>{qi + 1}. {q.question}</h3>
-          {q.options.map((option, oi) => (
-            <label key={oi} style={{ display: "block" }}>
-              <input
-                type="radio"
-                name={`question-${qi}`}
-                checked={answers[qi] === oi}
-                onChange={() => handleAnswer(qi, oi)}
-              />
-              {option}
-            </label>
-          ))}
+        <div key={q._id} className={styles.questionCard}>
+          <p className={styles.questionNumber}>Question {qi + 1}</p>
+          <p className={styles.questionText}>{q.question}</p>
+          <div className={styles.options}>
+            {q.options.map((option, oi) => (
+              <button
+                key={oi}
+                className={`${styles.option} ${answers[qi] === oi ? styles.optionSelected : ''}`}
+                onClick={() => handleAnswer(qi, oi)}
+              >
+                <span className={styles.optionLetter}>
+                  {String.fromCharCode(65 + oi)}
+                </span>
+                {option}
+              </button>
+            ))}
+          </div>
         </div>
       ))}
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p className={styles.error}>{error}</p>}
 
-      <button onClick={handleSubmit} disabled={submitting}>
-        {submitting ? "Submitting..." : "Submit Quiz"}
-      </button>
+      <div className={styles.actions}>
+        <button className={styles.btnSecondary} onClick={() => navigate(`/courses/${courseId}`)}>
+          Cancel
+        </button>
+        <button className={styles.btnPrimary} onClick={handleSubmit} disabled={submitting}>
+          {submitting ? "Submitting..." : "Submit Quiz"}
+        </button>
+      </div>
     </div>
   );
 }
