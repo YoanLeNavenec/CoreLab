@@ -1,14 +1,12 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "./Navbar";
 
-//Layout component that wraps around all pages for a default structure
 export default function Layout() {
   return (
-    <div>
+    <div style={{ minHeight: '100vh', background: 'var(--p-surface)' }}>
       <Navbar />
-      <main>
+      <main style={{ maxWidth: 1100, margin: '0 auto', padding: '40px 24px' }}>
         <Outlet />
-        {/* Renders whichever child route is currently active */}
       </main>
     </div>
   );

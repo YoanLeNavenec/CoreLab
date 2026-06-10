@@ -16,7 +16,7 @@ connectDB();
 const app = express();
 
 //CORS configuration to allow requests from the frontend, including credentials for cookies
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 

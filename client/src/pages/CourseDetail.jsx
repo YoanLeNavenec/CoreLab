@@ -3,21 +3,20 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { getCourse, enrollInCourse, getCourseLessons, updateProgress } from "../api/course.api";
 import { useAuthStore } from "../store/auth.store.js";
 import LessonList from "../components/course/LessonList";
-import adminStyles from "../styles/Admin.module.css";
+import styles from "../styles/Lesson.module.css";
+import dashStyles from "../styles/Dashboard.module.css";
 
 export default function CourseDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuthStore();
 
-  //State variables for course data, lessons, loading state, error messages, and enrollment state
   const [course, setCourse] = useState(null);
   const [lessons, setLessons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [enrolling, setEnrolling] = useState(false);
 
-  //Fetch course details and lessons from API on component mount, with error handling and loading state management
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -33,12 +32,9 @@ export default function CourseDetail() {
         setLoading(false);
       }
     };
-
-    //Call the fetchData function to load course details and lessons when the component mounts
     fetchData();
   }, [id]);
 
-  //Handles enrolling the user in the course, checks if user is logged in, calls enrollInCourse API, and sends to dashboard on success
   const handleEnroll = async () => {
     if (!user) return navigate("/login");
     try {
@@ -52,7 +48,6 @@ export default function CourseDetail() {
     }
   };
 
-  //Handles marking a lesson as complete by calling the updateProgress API with the course ID and lesson ID, with error handling
   const handleLessonComplete = async (lessonId) => {
     try {
       await updateProgress(id, lessonId);
@@ -61,32 +56,80 @@ export default function CourseDetail() {
     }
   };
 
-  //Render loading message, error message, or course details based on current state
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
-  if (!course) return <p>Course not found.</p>;
+  if (loading) return <p className="text-muted">Loading...</p>;
+  if (error) return <p style={{ color: 'var(--p-red)' }}>Error: {error}</p>;
+  if (!course) return <p className="text-muted">Course not found.</p>;
 
-  //Render course thumbnail, title, description, instructor name, price, enroll button, quiz link for logged-in users, and list of lessons with completion handling
   return (
-    <div>
-      {course.thumbnail && <img src={course.thumbnail} alt={course.title} />}
-      <h1>{course.title}</h1>
-      <p>{course.description}</p>
-      <p>Instructor: {course.instructor.name}</p>
-      <p>{course.price === 0 ? "Free" : `$${course.price}`}</p>
+    <div className={styles.page}>
 
-      <button onClick={handleEnroll} disabled={enrolling}>
-        {enrolling ? "Enrolling..." : "Enroll in this course"}
-      </button>
+      {/* Course header */}
+      <div className={styles.header}>
+        <p className={styles.breadcrumb}>
+          <Link to="/courses" className={styles.breadcrumbLink}>Courses</Link>
+          <span className={styles.breadcrumbSep}>/</span>
+          {course.title}
+        </p>
 
-      {/* quiz link — only shown to logged in users */}
-      {user && (
-        <Link to={`/courses/${id}/quiz`}>Take the Quiz</Link>
-      )}
+        {course.thumbnail && (
+          <img
+            src={course.thumbnail}
+            alt={course.title}
+            style={{ width: '100%', maxHeight: 280, objectFit: 'cover', borderRadius: 'var(--radius-lg)', marginBottom: 24 }}
+          />
+        )}
 
-      {/* Lessons section with a LessonList component that displays the list of lessons and allows marking them as complete */}
-      <h2>Lessons</h2>
+        <p className={styles.courseName}>{course.instructor.name}</p>
+        <h1 className={styles.title}>{course.title}</h1>
+        <p style={{ color: 'var(--p-charcoal)', marginBottom: 16 }}>{course.description}</p>
+
+        <div className={styles.meta}>
+          <span>{lessons.length} lessons</span>
+          <span>{course.price === 0 ? "Free" : `$${course.price}`}</span>
+        </div>
+
+        <div style={{ display: 'flex', gap: 12, marginTop: 24, flexWrap: 'wrap' }}>
+          <button
+            onClick={handleEnroll}
+            disabled={enrolling}
+            style={{
+              padding: '10px 24px',
+              background: 'var(--p-charcoal)',
+              color: 'var(--p-cream)',
+              border: 'none',
+              borderRadius: 'var(--radius-sm)',
+              fontWeight: 500,
+              fontSize: 14,
+              cursor: 'pointer'
+            }}
+          >
+            {enrolling ? "Enrolling..." : "Enroll in this course"}
+          </button>
+
+          {user && (
+            <Link
+              to={`/courses/${id}/quiz`}
+              style={{
+                padding: '10px 24px',
+                border: 'var(--border-strong)',
+                borderRadius: 'var(--radius-sm)',
+                fontWeight: 500,
+                fontSize: 14,
+                color: 'var(--p-charcoal)'
+              }}
+            >
+              Take the Quiz
+            </Link>
+          )}
+        </div>
+
+        {error && <p style={{ color: 'var(--p-red)', marginTop: 12 }}>{error}</p>}
+      </div>
+
+      {/* Lessons */}
+      <h2 style={{ fontSize: 18, fontWeight: 500, marginBottom: 16 }}>Lessons</h2>
       <LessonList lessons={lessons} onComplete={handleLessonComplete} />
+
     </div>
   );
 }

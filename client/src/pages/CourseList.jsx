@@ -1,15 +1,13 @@
 import { useState, useEffect } from "react";
 import { getCourses } from "../api/course.api";
 import CourseCard from "../components/course/CourseCard";
-import adminStyles from "../styles/Admin.module.css";
+import styles from "../styles/Dashboard.module.css";
 
-//CourseList page component that fetches and displays a list of all courses with loading and error handling
 export default function CourseList() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  //Fetch courses from API on component mount, with error handling and loading state management
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -21,20 +19,21 @@ export default function CourseList() {
         setLoading(false);
       }
     };
-    //Call the fetchCourses function to load courses when the component mounts
     fetchCourses();
   }, []);
 
-  //Render loading message, error message, or list of courses based on current state
-  if (loading) return <p>Loading courses...</p>;
-  if (error) return <p>Error: {error}</p>;
-  if (courses.length === 0) return <p>No courses available yet.</p>;
+  if (loading) return <p className="text-muted">Loading courses...</p>;
+  if (error) return <p style={{ color: 'var(--p-red)' }}>Error: {error}</p>;
+  if (courses.length === 0) return <p className={styles.emptyState}>No courses available yet.</p>;
 
-  //Map over courses and render a CourseCard for each one
   return (
-    <div>
-      <h1>All Courses</h1>
-      <div>
+    <div className={styles.page}>
+      <div className={styles.pageHeader}>
+        <h1 className={styles.greeting}>All Courses</h1>
+        <p className={styles.greetingDate}>{courses.length} course{courses.length !== 1 ? 's' : ''} available</p>
+      </div>
+
+      <div className={styles.courseGrid}>
         {courses.map((course) => (
           <CourseCard key={course._id} course={course} />
         ))}

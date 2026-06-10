@@ -3,14 +3,12 @@ import { getMyEnrollments } from "../api/course.api";
 import { useAuthStore } from "../store/auth.store.js";
 import { Link } from "react-router-dom";
 import styles from "../styles/Dashboard.module.css";
-import adminStyles from "../styles/Admin.module.css";
 
 export default function Dashboard() {
   const { user } = useAuthStore();
   const [enrollments, setEnrollments] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  //Fetch user's course enrollments on component mount, with error handling and loading state management
   useEffect(() => {
     const fetchEnrollments = async () => {
       try {
@@ -22,46 +20,85 @@ export default function Dashboard() {
         setLoading(false);
       }
     };
-
     fetchEnrollments();
   }, []);
 
-  //Render loading message or dashboard content based on current state
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p className="text-muted">Loading...</p>;
 
-  //Render welcome message, list of enrolled courses with progress, and instructor section if user is an instructor
   return (
-    <div>
-      <h1>Welcome back, {user.name}</h1>
+    <div className={styles.page}>
+      <div className={styles.pageHeader}>
+        <h1 className={styles.greeting}>Welcome back, {user.name}</h1>
+        <p className={styles.greetingDate}>{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+      </div>
 
-      <h2>My Courses</h2>
+      <div className={styles.statsRow}>
+        <div className={`${styles.statCard} ${styles.statCardAccent}`}>
+          <p className={styles.statLabel}>Enrolled courses</p>
+          <p className={styles.statValue}>{enrollments.length}</p>
+          <p className={styles.statSub}>Total</p>
+        </div>
+        <div className={`${styles.statCard} ${styles.statCardAccent}`}>
+          <p className={styles.statLabel}>In progress</p>
+          <p className={styles.statValue}>{enrollments.filter(e => e.progress > 0 && e.progress < 100).length}</p>
+          <p className={styles.statSub}>Active</p>
+        </div>
+        <div className={`${styles.statCard} ${styles.statCardAccent}`}>
+          <p className={styles.statLabel}>Completed</p>
+          <p className={styles.statValue}>{enrollments.filter(e => e.progress === 100).length}</p>
+          <p className={styles.statSub}>Done</p>
+        </div>
+      </div>
+
+      <div className={styles.sectionHeader}>
+        <h2 className={styles.sectionTitle}>My Courses</h2>
+        <Link to="/courses" className={styles.sectionLink}>Browse all →</Link>
+      </div>
+
       {enrollments.length === 0 ? (
-        <p>You haven't enrolled in any courses yet. <Link to="/courses">Browse courses</Link></p>
+        <p className={styles.emptyState}>
+          You haven't enrolled in any courses yet. <Link to="/courses">Browse courses</Link>
+        </p>
       ) : (
-        <ul>
+        <div className={styles.courseGrid}>
           {enrollments.map((enrollment) => (
-            <li key={enrollment._id}>
-              <Link to={`/courses/${enrollment.course._id}`}>
-                {enrollment.course.title}
-              </Link>
-              <p>Progress: {enrollment.progress}%</p>
-              <div style={{ width: "100%", background: "#eee" }}>
-                <div style={{
-                  width: `${enrollment.progress}%`,
-                  background: "green",
-                  height: "8px"
-                }} />
+            <div key={enrollment._id} className={styles.notifItem}>
+              <div style={{ flex: 1 }}>
+                <Link to={`/courses/${enrollment.course._id}`} style={{ fontWeight: 500, color: 'var(--p-darkest)' }}>
+                  {enrollment.course.title}
+                </Link>
+                <p className={styles.statSub} style={{ marginTop: 6, marginBottom: 6 }}>Progress: {enrollment.progress}%</p>
+                <div className="progress-track" style={{ height: 6, background: 'var(--p-cream)', borderRadius: 20, overflow: 'hidden' }}>
+                  <div style={{
+                    width: `${enrollment.progress}%`,
+                    background: enrollment.progress < 30 ? 'var(--p-red)' : 'var(--p-charcoal)',
+                    height: '100%',
+                    borderRadius: 20,
+                    transition: 'width 0.4s ease'
+                  }} />
+                </div>
               </div>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
 
-      {/* If the user is an instructor, show a section with a link to create a new course.*/}
       {user.role === "instructor" && (
-        <div>
-          <h2>My Courses as Instructor</h2>
-          <Link to="/courses/new">Create a new course</Link>
+        <div style={{ marginTop: '40px' }}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Instructor</h2>
+          </div>
+          <Link to="/courses/new" style={{
+            display: 'inline-block',
+            padding: '10px 24px',
+            background: 'var(--p-charcoal)',
+            color: 'var(--p-cream)',
+            borderRadius: 'var(--radius-sm)',
+            fontWeight: 500,
+            fontSize: 14
+          }}>
+            Create a new course
+          </Link>
         </div>
       )}
     </div>
